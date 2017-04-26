@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+
+message AnimationFile {
+  AnimationHeader header = 1;
+  repeated Palette palettes=2;
+  repeated SceneItem scenes = 3;
+  repeated Timeline timelines = 4;
+  InAnimationApp app = 9;
+}
+
+message AnimationHeader {
+  uint32 tags = 1;
+  string ver = 2;
+  uint32 busnum = 3;
+  string name  = 4;
+  string desc = 5;
+  string url = 6;
+  string author = 7;
+  string perms = 8;
+  string createdAt = 9;
+  uint32 csum = 10;
+  string uuid = 11;
+  Lum defaultColor = 12;
+}
+
+message Palette {
+  uint32 red=1;
+  uint32 green=2;
+  uint32 blue=3;
+  uint32 white=4;
+  uint32 alpha=5;
+}
+
+message Lum {
+  uint32  red = 1;
+  uint32  green = 2;
+  uint32  blue = 3;
+  uint32  white = 4;
+  uint32  alpha = 5;
+}
+
+message NodeEffect {
+  uint32 busId = 1;
+  uint32 nodeId = 2;
+  Lum lum = 3;
+  uint32  paletteId = 4;
+}
+
+message SceneItem {
+  string name = 1;
+  repeated NodeEffect nodes = 2;
+}
+
+message SceneFrame {
+  uint32 sceneId = 1;
+  uint32  duration = 2;
+  uint32  enterMode = 3;
+  uint32  leaveMode = 4;
+  uint32  loopMode = 5;
+}
+
+message Timeline {
+  uint32 startTime = 1;
+  string name = 2;
+  repeated SceneFrame frames = 3;
+}
+
+message InAnimationApp {
+  string name = 1;
+  string type = 2;
+  string program = 3;
+  string url = 4;
+}
+
+message AnimationPlaylist {
+  uint32 tags = 1;
+  string createdAt = 2;
+  uint32 loopMode = 3;
+  repeated string filenames = 4;
+  InAnimationApp app = 9;
+}
+
+message ProtoRequest {
+  string msgType = 1;
+  uint32 sn = 2;
+  uint32 msgLen = 3;
+  bytes msgBody = 4;
+  uint32 csum = 5;
+}
+
+message ProtoResponse {
+  uint32 sn = 1;
+  uint32 osn = 2;
+  uint32 rc = 3;
+  string reason = 4;
+  bytes body = 5;
+  uint32 csum  = 6;
+}

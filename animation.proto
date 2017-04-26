@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+
 message AnimationFile {
   AnimationHeader header = 1;
   repeated Palette palettes=2;

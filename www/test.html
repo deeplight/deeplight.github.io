@@ -31,39 +31,32 @@ http://www.templatemo.com/tm-406-flex
         <![endif]-->
 
 
-    <div class="site-main" id="sTop">
-        <div class="site-header">
-            <div class="main-header">
-                <div class="container">
-                    <div id="menu-wrapper">
-                        <div class="row">
-                            <div class="logo-wrapper col-md-2 col-sm-2">
-                                <h1>
-                                    <a href="#">MCTEC</a>
-                                </h1>
-                            </div>
-                            <!-- /.logo-wrapper -->
-                            <div class="col-md-10 col-sm-10 main-menu text-right">
-                                <div class="toggle-menu visible-sm visible-xs"><i class="fa fa-bars"></i></div>
-                                <ul class="menu-first">
-                                    <li><a href="index.html">首页</a></li>
-                                    <li class="active"><a href="#sender">发送测试</a></li>
-                                    <li><a href="#receiver">接收测试</a></li>
-                                </ul>
-                            </div>
-                            <!-- /.main-menu -->
-                        </div>
-                        <!-- /.row -->
-                    </div>
-                    <!-- /#menu-wrapper -->
+    <div class="container">
+        <div id="menu-wrapper">
+            <div class="row">
+                <div class="logo-wrapper col-md-2 col-sm-2">
+                    <h1>
+                        <a href="#">MCTEC</a>
+                    </h1>
                 </div>
-                <!-- /.container -->
+                <!-- /.logo-wrapper -->
+                <div class="col-md-10 col-sm-10 main-menu text-right">
+                    <div class="toggle-menu visible-sm visible-xs"><i class="fa fa-bars"></i></div>
+                    <ul class="menu-first">
+                        <li><a href="index.html">首页</a></li>
+                        <li class="active"><a href="#sender">发送测试</a></li>
+                        <li><a href="#receiver">接收测试</a></li>
+                    </ul>
+                </div>
+                <!-- /.main-menu -->
             </div>
-            <!-- /.main-header -->
+            <!-- /.row -->
         </div>
-        <!-- /.site-header -->
+        <!-- /#menu-wrapper -->
     </div>
-    <!-- /.site-main -->
+    <!-- /.container -->
+
+
 
 
 
@@ -82,7 +75,7 @@ http://www.templatemo.com/tm-406-flex
                 <div class="col-md-3 col-sm-6">
                     <button type="button" class="btn" onclick="playByte(1)">1</button>
                     <button type="button" class="btn btn-default">2</button>
-                    <button type="button" class="btn btn-primary" onclick="playByte(3)">3</button>
+                    <button type="button" class="btn btn-primary" onclick="playByte(0xff)">3</button>
                 </div>
                 <!-- /.col-md-3 -->
                 <div class="col-md-3 col-sm-6">
@@ -99,6 +92,7 @@ http://www.templatemo.com/tm-406-flex
                 <!-- /.col-md-3 -->
             </div>
             <!-- /.row -->
+            <canvas id="myCanvas" width="600" height="400" style="border:1px solid #000000;">Hi</canvas>
         </div>
         <!-- /.container -->
     </div>
@@ -118,10 +112,12 @@ http://www.templatemo.com/tm-406-flex
             <!-- /.row -->
             <div class="row">
                 <div class="portfolio-item col-md-3 col-sm-6">
+                    <button type="button" class="btn btn-primary" onclick="getMic()">Microphone</button>
 
                 </div>
                 <!-- /.portfolio-item -->
                 <div class="portfolio-item col-md-3 col-sm-6">
+                    <p><canvas style="background: white;"></canvas></p>
 
                 </div>
                 <!-- /.portfolio-item -->

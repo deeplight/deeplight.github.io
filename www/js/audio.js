@@ -2,7 +2,7 @@
 
 
 var g_freq_1 = 12000;
-var g_freq_0 = 11000;
+var g_freq_0 = 13000;
 var bit_duration = 15;
 
 
@@ -113,11 +113,11 @@ var dataArray;
 var analyser;
 
 function playByte(b) {
-    setInterval(function() {
-        play(b);
-    }, 350);
+    // setInterval(function() {
+    //     play(b);
+    // }, 350);
 
-    //play(b);
+    play(b);
 }
 
 function play(b) {

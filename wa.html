@@ -7,6 +7,7 @@
     <script src="jquery-3.2.1.min.js"></script>
     <script>
         var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+        var gainNode = audioCtx.createGain();
         var channels = 1;
         // Create an empty two second stereo buffer at the
         // sample rate of the AudioContext
@@ -144,7 +145,8 @@
             var source = audioCtx.createBufferSource();
             // set the buffer in the AudioBufferSourceNode
             source.buffer = buffer;
-            source.connect(audioCtx.destination);
+            source.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
             // start the source playing
             source.start();
             $('p').html('SendString-' + out);
@@ -166,6 +168,11 @@
             $('p').html('Audio Stop');
         }
 
+        function adjust_volume() {
+            console.log($('#volume').val());
+            $('#cvol').html($('#volume').val());
+            gainNode.gain.value = parseInt($('#volume').val()) / 100.0;
+        }
         $(document).ready(function() {
             wa_init();
 
@@ -174,6 +181,8 @@
             }
 
             $('button').click(buttonClick);
+            $('#volume').change(adjust_volume);
+            adjust_volume();
         });
     </script>
 </head>
@@ -187,6 +196,10 @@
     <div>
         <input type="text" id="sendstr">
         <button id="sendcmd">发送</button>
+    </div>
+    <div>
+        音量调节 - <span id='cvol'></span><br>0
+        <input id="volume" type="range" min="0" max="100" value="100" step="1" />100
     </div>
     <p>Ready!</p>
 

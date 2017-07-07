@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <script src="jquery-3.2.1.min.js"></script>
+    <script>
+        var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+        var channels = 1;
+        // Create an empty two second stereo buffer at the
+        // sample rate of the AudioContext
+        var frameCount = audioCtx.sampleRate * 0.1;
+        var tones = {
+            A: {
+                freq: 7751.938,
+                ch: 'A',
+                fm: []
+            },
+            B: {
+                freq: 7936.508,
+                ch: 'B',
+                fm: []
+            },
+            C: {
+                freq: 8000,
+                ch: 'C',
+                fm: []
+            },
+            D: {
+                freq: 8064.516,
+                ch: 'D',
+                fm: []
+            },
+            E: {
+                freq: 8130.081,
+                ch: 'E',
+                fm: []
+            },
+            F: {
+                freq: 8196.721,
+                ch: 'F',
+                fm: []
+
+            },
+            Z: {
+                freq: 8264.463,
+                ch: 'Z',
+                fm: []
+            }
+        };
+        var myBuffers = [];
+        var freqFrames = {};
+
+        function createBuffer(str) {
+            var frames = audioCtx.sampleRate * 0.11 * (2 * str.length + 4);
+            var buffer = audioCtx.createBuffer(1, frames, audioCtx.sampleRate);
+            var offset = 0;
+            setBuffer(buffer, 'Z', offset);
+            offset += frameCount;
+            setSilence(buffer, offset);
+            offset += frameCount;
+
+
+            for (var i = 0; i < str.length; i++) {
+                setBuffer(buffer, str.charAt(i), offset);
+                offset += frameCount;
+                setSilence(buffer, offset);
+                offset += frameCount;
+
+            }
+            setSilence(buffer, offset);
+            offset += frameCount;
+            setSilence(buffer, offset);
+            offset += frameCount;
+
+            return buffer;
+        }
+
+        function setBuffer(buffer, ch, offset) {
+            var nowBuffering = buffer.getChannelData(0);
+            var t = tones[ch];
+            if (!t)
+                return false;
+
+            var each = t.freq * 2 * Math.PI / audioCtx.sampleRate;
+            for (var j = offset; j < (offset + frameCount); j++) {
+                nowBuffering[j] = Math.sin(each * j);
+            }
+
+            return true;
+        }
+
+        function setSilence(buffer, offset) {
+            var nowBuffering = buffer.getChannelData(0);
+            for (var j = offset; j < (offset + frameCount); j++) {
+                nowBuffering[j] = 0;
+            }
+        }
+
+        function wa_init() {
+            for (var f in tones) {
+                if (tones.hasOwnProperty(f)) {
+                    var myBuffer = audioCtx.createBuffer(channels, frameCount, audioCtx.sampleRate);
+
+                    var nowBuffering = myBuffer.getChannelData(0);
+                    var each = tones[f].freq * 2 * Math.PI / audioCtx.sampleRate;
+                    for (var j = 0; j < frameCount; j++) {
+                        nowBuffering[j] = Math.sin(each * j);
+                    }
+
+                    tones[f].fm = myBuffer;
+                }
+            }
+        }
+
+        function wa_play(freq) {
+            $('p').html('Audio Play-' + freq);
+            wa_sendstr(freq + '');
+            // if (!tones[freq])
+            //     return;
+
+            // // Get an AudioBufferSourceNode.
+            // // This is the AudioNode to use when we want to play an AudioBuffer
+            // var source = audioCtx.createBufferSource();
+            // // set the buffer in the AudioBufferSourceNode
+            // source.buffer = tones[freq].fm;
+            // source.connect(audioCtx.destination);
+            // // start the source playing
+            // source.start();
+        }
+
+        function wa_sendstr(str) {
+            console.log(str.toUpperCase());
+            var t = str.toUpperCase();
+            var out = '';
+            for (var i = 0; i < t.length; i++) {
+                if ((t.charAt(i) >= 'A' && t.charAt(i) <= 'F') || t.charAt(i) == 'Z') {
+                    out += t.charAt(i);
+                }
+            }
+            var buffer = createBuffer(out);
+            console.dir(buffer);
+            var source = audioCtx.createBufferSource();
+            // set the buffer in the AudioBufferSourceNode
+            source.buffer = buffer;
+            source.connect(audioCtx.destination);
+            // start the source playing
+            source.start();
+            $('p').html('SendString-' + out);
+        }
+
+        function buttonClick(ev) {
+            var tid = ev.target.id;
+            if (tid.indexOf('play_') == 0) {
+                wa_play(tid.substring(5));
+                $('p').html('play-' + tid.substring(5));
+            }
+            if (tid.indexOf('sendcmd') == 0) {
+                console.log($('#sendstr').val());
+                wa_sendstr($('#sendstr').val());
+            }
+        }
+
+        function wa_stop() {
+            $('p').html('Audio Stop');
+        }
+
+        $(document).ready(function() {
+            wa_init();
+
+            for (var f in tones) {
+                $('#buttons').append('<button id="play_' + f + '">' + f + '--' + tones[f].freq + '</button>');
+            }
+
+            $('button').click(buttonClick);
+        });
+    </script>
+</head>
+
+<body>
+
+    <h2>WebAudio</h2>
+
+    <div id="buttons"></div>
+
+    <div>
+        <input type="text" id="sendstr">
+        <button id="sendcmd">发送</button>
+    </div>
+    <p>Ready!</p>
+
+</body>
+
+</html>

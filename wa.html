@@ -11,50 +11,72 @@
         var channels = 1;
         // Create an empty two second stereo buffer at the
         // sample rate of the AudioContext
-        var frameCount = audioCtx.sampleRate * 0.1;
+        var frameCount = audioCtx.sampleRate * 0.10;
         var tones = {
             A: {
                 freq: 7751.938,
                 ch: 'A',
-                fm: []
+                fm: [],
+                num: 0b001
             },
             B: {
                 freq: 7936.508,
                 ch: 'B',
-                fm: []
+                fm: [],
+                num: 0b010
             },
             C: {
                 freq: 8000,
                 ch: 'C',
-                fm: []
+                fm: [],
+                num: 0b011
             },
             D: {
                 freq: 8064.516,
                 ch: 'D',
-                fm: []
+                fm: [],
+                num: 0b100
             },
             E: {
                 freq: 8130.081,
                 ch: 'E',
-                fm: []
+                fm: [],
+                num: 0b101
             },
             F: {
                 freq: 8196.721,
                 ch: 'F',
-                fm: []
+                fm: [],
+                num: 0b110
 
+            },
+            N: {
+                freq: 7872.0,
+                ch: 'N',
+                fm: [],
+                num: 0b000,
             },
             Z: {
                 freq: 8264.463,
                 ch: 'Z',
-                fm: []
+                fm: [],
+                num: 0b111
             }
         };
         var myBuffers = [];
         var freqFrames = {};
 
+        function getToneByNum(n) {
+            for (var t in tones) {
+                if (tones.hasOwnProperty(t) && tones[t].num == n)
+                    return tones[t];
+            }
+
+            return null;
+        }
+
         function createBuffer(str) {
-            var frames = audioCtx.sampleRate * 0.11 * (2 * str.length + 4);
+            var frames = audioCtx.sampleRate * 0.10 * (2 * str.length + 4);
             var buffer = audioCtx.createBuffer(1, frames, audioCtx.sampleRate);
             var offset = 0;
             setBuffer(buffer, 'Z', offset);
@@ -70,10 +92,6 @@
                 offset += frameCount;
 
             }
-            setSilence(buffer, offset);
-            offset += frameCount;
-            setSilence(buffer, offset);
-            offset += frameCount;
 
             return buffer;
         }
@@ -135,13 +153,30 @@
             console.log(str.toUpperCase());
             var t = str.toUpperCase();
             var out = '';
-            for (var i = 0; i < t.length; i++) {
-                if ((t.charAt(i) >= 'A' && t.charAt(i) <= 'F') || t.charAt(i) == 'Z') {
-                    out += t.charAt(i);
-                }
+            var csum = 0;
+            for (var i = 0; i < 7; i++) {
+                if (i < t.length) {
+                    if ((t.charAt(i) >= 'A' && t.charAt(i) <= 'F') || t.charAt(i) == 'N' || t.charAt(i) == 'Z') {
+                        out += t.charAt(i);
+                    } else
+                        out += 'N';
+                } else
+                    out += 'N';
             }
+
+            csum = 0b111;
+            for (var i = 0; i < 7; i++) {
+                console.log('0b' + tones[out.charAt(i)].num.toString(2));
+                csum ^= tones[out.charAt(i)].num;
+            }
+            console.log('csum=0b' + csum.toString(2));
+            var t = getToneByNum(csum);
+            if (t)
+                out += t.ch;
+            else
+                out += 'N';
+
             var buffer = createBuffer(out);
-            console.dir(buffer);
             var source = audioCtx.createBufferSource();
             // set the buffer in the AudioBufferSourceNode
             source.buffer = buffer;
@@ -189,7 +224,7 @@
 
 <body>
 
-    <h2>WebAudio</h2>
+    <h2>WebAudio - 50ms</h2>
 
     <div id="buttons"></div>
 

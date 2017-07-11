@@ -76,20 +76,20 @@
         }
 
         function createBuffer(str) {
-            var frames = audioCtx.sampleRate * 0.10 * (2 * str.length + 4);
+            var frames = audioCtx.sampleRate * 0.10 * (1.5 * str.length + 1.5);
             var buffer = audioCtx.createBuffer(1, frames, audioCtx.sampleRate);
             var offset = 0;
             setBuffer(buffer, 'Z', offset);
             offset += frameCount;
             setSilence(buffer, offset);
-            offset += frameCount;
+            offset += frameCount / 2;
 
 
             for (var i = 0; i < str.length; i++) {
                 setBuffer(buffer, str.charAt(i), offset);
                 offset += frameCount;
                 setSilence(buffer, offset);
-                offset += frameCount;
+                offset += frameCount / 2;
 
             }
 
@@ -112,7 +112,7 @@
 
         function setSilence(buffer, offset) {
             var nowBuffering = buffer.getChannelData(0);
-            for (var j = offset; j < (offset + frameCount); j++) {
+            for (var j = offset; j < (offset + frameCount / 2); j++) {
                 nowBuffering[j] = 0;
             }
         }
